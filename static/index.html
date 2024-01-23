@@ -33,40 +33,69 @@
 </head>
 <body>
     <h1>Project-K</h1>
-            <form id="uploadForm" enctype="multipart/form-data">
-            <label for="image">Choose an image:</label>
-            <input type="file" id="image" name="image" accept="image/*" required>
-            <br>
-            <button type="button" onclick="uploadImage()">Upload Image</button>
-        </form>
 
+    <div class="container-left">
         <h2>Participants</h2>
         <form id="participantsForm">
             <label for="participantName">Name:</label>
-            <input type="text" id="participantName" name="participantName" required>
+            <input type="text" id="participantName" name="participantName" required onkeydown="handleEnterKey(event)">
             <button type="button" onclick="addParticipant()">Add</button>
         </form>
+        
+        <h2>Participants Table</h2>
+        <div class="table-container">
+            <table id="participantsTable">
+                <tr>
+                    <th>Name</th>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <div class="container-right">
+        <h2>Paid By</h2>
+        <form id="paidByForm">
+            <label for="paidBy">Select who paid for the bill:</label>
+            <select id="paidBy" name="paidBy" required></select>
+        </form>
+
+        <div id="right_botom">
+            <h2>Bill Upload</h2>
+            <form id="uploadForm" enctype="multipart/form-data">
+                <label for="image">Choose an image:</label>
+                <input type="file" id="image" name="image" accept="image/*" required>
+                <br>
+                <button type="button" onclick="uploadImage()">Upload Image</button>
+            </form>
+        </div>
+        
+    </div>
+
+    <div> 
+        <hr style="clear:both;visibility: hidden;">
+        <h2 id="expensesHeading" style="display:none;">Expenses</h2>
+
     
-            <h2>Participants Table</h2>
-        <table id="participantsTable">
-            <tr>
-                <th>Name</th>
-            </tr>
-        </table>
-    
-    <h2>Bills</h2>
-    <div id="responseContainer">
-        <!-- Response will be displayed here -->
+        <div id="expensesContainer">
+            <!-- Response will be displayed here -->
+        </div>
     </div>
     
-    <button type="button" onclick="splitBill()">Split</button>
 
-    <h2>Split Result</h2>
-    <div id="splitResultContainer">
+    <button id="splitButton" type="button" onclick="splitBill()" style="display:none;">Split</button>
+
+    <div id="splitResultContainer" style="display:none;">
+        <h2>Split Result</h2>
         <!-- Split result will be displayed here -->
     </div>
 
     <script>
+        // Call the function when the page loads
+        window.onload = function () {
+            // Populate the Paid By dropdown
+            populatePaidByDropdown();
+        };
+
         function uploadImage() {
             var formData = new FormData(document.getElementById("uploadForm"));
             console.log("image data: ", formData)
@@ -113,10 +142,20 @@
                     });
 
                     tableHtml += "</table>";
-                    document.getElementById("responseContainer").innerHTML = tableHtml;
+                    document.getElementById("expensesContainer").innerHTML = tableHtml;
+
+                    // Show the "Expenses" heading
+                    document.getElementById("expensesHeading").style.display = "block";
+
+                    // Show the Split button and result container
+                    document.getElementById("splitButton").style.display = "block";
+                    document.getElementById("splitButton").scrollIntoView({
+                    behavior: "smooth",
+                    block: "start"
+                });
                 } else {
                     // Display errors
-                    document.getElementById("responseContainer").innerHTML = "<p>Error: " + data.error + "</p>";
+                    document.getElementById("expensesContainer").innerHTML = "<p>Error: " + data.error + "</p>";
                 }
             })
             .catch(error => {
@@ -138,7 +177,36 @@
 
                 // Clear the input field
                 document.getElementById("participantName").value = "";
+
+                // Populate the Paid By dropdown
+                populatePaidByDropdown();
             }
+        }
+
+        function handleEnterKey(event) {
+        if (event.key === "Enter") {
+            // If Enter key is pressed, trigger the addParticipant function
+            addParticipant();
+            // Prevent the default behavior of the Enter key (form submission)
+            event.preventDefault();
+        }
+    }
+
+        function populatePaidByDropdown() {
+            var dropdown = document.getElementById("paidBy");
+            var participantsTable = document.getElementById("participantsTable");
+
+            // Clear existing options
+            dropdown.innerHTML = "";
+
+            // Iterate through participants and add them as options
+            participantsTable.querySelectorAll("td:first-child").forEach(cell => {
+                var participantName = cell.textContent;
+                var option = document.createElement("option");
+                option.value = participantName;
+                option.text = participantName;
+                dropdown.appendChild(option);
+            });
         }
 
         function splitBill() {
@@ -151,6 +219,9 @@
             var participantsTable = document.getElementById("participantsTable");
             var participantNames = Array.from(participantsTable.querySelectorAll("td:first-child")).map(cell => cell.textContent);
             participantsList = participantNames;
+            
+            var paidByDropdown = document.getElementById("paidBy");
+            var selectedPaidBy = paidByDropdown.value;
 
             // Get bills data
             for (var i = 1; i < billsTable.rows.length; i++) {
@@ -174,7 +245,8 @@
             // Combine participants list and bills data
             var requestData = {
                 participants: participantsList,
-                bills: billsData
+                bills: billsData,
+                paidBy: selectedPaidBy
             };
 
             // Log the data before sending the request
@@ -215,6 +287,12 @@
 
                 resultTableHtml += "</table>";
                 document.getElementById("splitResultContainer").innerHTML = resultTableHtml;
+
+                document.getElementById("splitResultContainer").style.display = "block";
+                document.getElementById("splitResultContainer").scrollIntoView({
+                    behavior: "smooth",
+                    block: "start"
+                });
 
             })
             .catch(error => {

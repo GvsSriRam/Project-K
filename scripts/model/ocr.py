@@ -45,7 +45,8 @@ class Ocr:
     
     def split_from_web_data(self, data):
         user_id = {user: i for i, user in enumerate(data["participants"])}
-        expenses = [Expense(bill["text"], bill["amount"], 0, [user_id[i] for i in bill["splitTo"]]) for bill in data["bills"]]
+        paid_by = user_id[data["paidBy"]]
+        expenses = [Expense(bill["text"], bill["amount"], paid_by, [user_id[i] for i in bill["splitTo"]]) for bill in data["bills"]]
         
         amt_paid, amt_share, balance_amt = self.final_split(expenses, list(user_id.keys()))
 

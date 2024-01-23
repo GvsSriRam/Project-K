@@ -7,6 +7,7 @@ h1 {
     text-align: center;
 }
 
+/* Form styles */
 form {
     margin-bottom: 20px;
 }
@@ -15,27 +16,38 @@ label {
     margin-right: 10px;
 }
 
-#participantsTable, #billsTable, #splitResultTable {
-    border-collapse: collapse;
-    width: 100%;
-}
-
-#participantsTable th, #participantsTable td,
-#billsTable th, #billsTable td,
-#splitResultTable th, #splitResultTable td {
-    border: 1px solid #ddd;
-    padding: 8px;
-    text-align: left;
-}
-
-#participantsTable th, #billsTable th, #splitResultTable th {
-    background-color: #f2f2f2;
-}
-
 input[type='file'] {
     margin-bottom: 10px;
 }
 
+/* Table styles */
+.table-container {
+    margin-top: 20px;
+    overflow-x: auto;
+    width: 100%;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+    table-layout: fixed;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    word-wrap: break-word;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+/* Button styles */
 button {
     padding: 10px;
     background-color: #4CAF50;
@@ -49,8 +61,66 @@ button:hover {
     background-color: #45a049;
 }
 
-#splitResultContainer {
+/* Split button styles */
+#splitButton {
+    display: block;
     margin-top: 20px;
+    margin-bottom: 40px;
+    margin-top: 20px;
+}
+
+#splitButton {
+    background-color: #007BFF;
+}
+
+#splitButton:hover {
+    background-color: #0056b3;
+}
+
+/* Split Result Container styles */
+#splitResultContainer, #expensesContainer {
+    margin-top: 20px;
+}
+.container-left {
+    width: 50%; /* Adjust the width of each container as needed */
+    margin: 0; /* Remove any default margin */
+    padding: 10px; /* Adjust the padding as needed */
+    box-sizing: border-box; /* Include padding in the width calculation */
+    float: left; /* Float the left container */
+    border-right: 1px solid #ddd;
+}
+    
+.container-right {
+    width: 50%; 
+    margin: 0; 
+    padding: 10px; 
+    box-sizing: border-box; 
+    float: right;
+}
+
+@media (max-width: 600px) {
+    .container-left {
+      float: none;
+      width: 100%;
+      margin-bottom: 20px;
+      border-right: 0px solid #ddd;
+    }
+  
+    .container-right {
+      float: none;
+      width: 100%;
+    }
+  }
+
+#expensesHeading {
+    position: relative;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-align: center;
 }
 
 /* Custom styles for checkboxes */
@@ -59,23 +129,6 @@ input[type='checkbox'] {
 }
 
 /* Custom style for Split To column */
-#billsTable th:nth-child(4), #billsTable td:nth-child(4) {
+.split-to-column {
     text-align: center;
-}
-
-/* Custom style for Split button */
-#splitButton {
-    display: block;
-    margin-top: 20px;
-    margin-bottom: 40px;
-    padding: 10px;
-    background-color: #007BFF;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-#splitButton:hover {
-    background-color: #0056b3;
 }
