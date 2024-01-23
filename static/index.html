@@ -59,20 +59,29 @@
             <select id="paidBy" name="paidBy" required></select>
         </form>
 
-        <h2>Bill Upload</h2>
-        <form id="uploadForm" enctype="multipart/form-data">
-            <label for="image">Choose an image:</label>
-            <input type="file" id="image" name="image" accept="image/*" required>
-            <br>
-            <button type="button" onclick="uploadImage()">Upload Image</button>
-        </form>
+        <div id="right_botom">
+            <h2>Bill Upload</h2>
+            <form id="uploadForm" enctype="multipart/form-data">
+                <label for="image">Choose an image:</label>
+                <input type="file" id="image" name="image" accept="image/*" required>
+                <br>
+                <button type="button" onclick="uploadImage()">Upload Image</button>
+            </form>
+        </div>
+        
+    </div>
+
+    <div> 
+        <hr style="clear:both;visibility: hidden;">
+        <h2 id="expensesHeading" style="display:none;">Expenses</h2>
+
+    
+        <div id="expensesContainer">
+            <!-- Response will be displayed here -->
+        </div>
     </div>
     
-    <h2 id="expensesHeading" style="display:none;">Expenses</h2>
-    <div id="expensesContainer">
-        <!-- Response will be displayed here -->
-    </div>
-    
+
     <button id="splitButton" type="button" onclick="splitBill()" style="display:none;">Split</button>
 
     <div id="splitResultContainer" style="display:none;">

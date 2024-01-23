@@ -30,12 +30,17 @@ input[type='file'] {
 table {
     border-collapse: collapse;
     width: 100%;
+    table-layout: fixed;
 }
 
 th, td {
     border: 1px solid #ddd;
     padding: 8px;
     text-align: left;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    word-wrap: break-word;
 }
 
 th {
@@ -81,6 +86,8 @@ button:hover {
     margin: 0; /* Remove any default margin */
     padding: 10px; /* Adjust the padding as needed */
     box-sizing: border-box; /* Include padding in the width calculation */
+    float: left; /* Float the left container */
+    border-right: 1px solid #ddd;
 }
     
 .container-right {
@@ -88,6 +95,32 @@ button:hover {
     margin: 0; 
     padding: 10px; 
     box-sizing: border-box; 
+    float: right;
+}
+
+@media (max-width: 600px) {
+    .container-left {
+      float: none;
+      width: 100%;
+      margin-bottom: 20px;
+      border-right: 0px solid #ddd;
+    }
+  
+    .container-right {
+      float: none;
+      width: 100%;
+    }
+  }
+
+#expensesHeading {
+    position: relative;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-align: center;
 }
 
 /* Custom styles for checkboxes */
