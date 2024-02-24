@@ -25,6 +25,17 @@ class ModelConnector:
             logger.error(str(e))
         return res
     
+    def expenses_gemini(self, image_path):
+        res = []
+        try:
+            ocr_obj = Ocr()
+            expenses = ocr_obj.expenses_detection_gemini(image_path)
+
+            res = [{"expense_id": i, "text": expense.get("title"), "quantity": expense.get("quantity"), "amount": expense.get("amt")} for i, expense in enumerate(expenses)]
+        except Exception as e:
+            logger.error(str(e))
+        return res
+    
     def split(self, data):
         res = {}
         try:
