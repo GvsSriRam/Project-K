@@ -29,6 +29,23 @@ def get_expenses(image: UploadFile = File(...)):
         result["error"] = str(e)
     return result
 
+@router.post("/get_expenses_gemini", tags=["split"])
+def get_expenses_gemini(image: UploadFile = File(...)): #image: UploadFile = File(...)
+    result = {"expenses": [], "error": ""}
+    try:
+        content = image.file.read()
+        image_path = "temp_image.png"
+
+        # Write the content of the image to a file
+        with open(image_path, "wb") as img_file:
+            img_file.write(content)
+
+        result["expenses"] = model_connector_obj.expenses_gemini(image_path)
+    except Exception as e:
+        logger.error(str(e))
+        result["error"] = str(e)
+    return result
+
 @router.post("/split", tags=["split"])
 def split(data: dict):
     result = {"split_result": "", "error": ""}

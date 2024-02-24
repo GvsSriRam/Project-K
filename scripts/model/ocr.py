@@ -3,6 +3,12 @@ import re
 import pytesseract
 from typing import Optional, List
 
+import base64
+import google.auth
+import vertexai
+from vertexai.preview.generative_models import GenerativeModel, Part, Image
+import vertexai.preview.generative_models as generative_models
+
 from scripts.log import logger
 
 # pytesseract.pytesseract.tesseract_cmd = r'/opt/homebrew/bin/tesseract'
@@ -42,6 +48,57 @@ class Ocr:
             expense_objs.append(obj)
         
         return expense_objs
+    
+    def expenses_detection_gemini(self, image_path: str):
+        _, project_id = google.auth.default(
+            scopes=["https://www.googleapis.com/auth/cloud-platform"]
+        )
+        img = Image.load_from_file("walmart_bill_pic.jpeg")
+        img = Part.from_image(img)
+
+        vertexai.init(project = project_id, location = "us-central1")
+        model = GenerativeModel("gemini-pro-vision")
+        responses = model.generate_content(
+            [
+                img, 
+                """List only the expenses and their quantity, amount in the bill in json format - {
+                    "name": "xxxxxx",
+                    "quantity": "yyyy",
+                    "price": "zzzz"
+                    }. Also, show taxes, totals."""
+            ],
+            generation_config={
+                "max_output_tokens": 2048,
+                "temperature": 0.4,
+                "top_p": 1,
+                "top_k": 32
+            },
+            safety_settings={
+                    generative_models.HarmCategory.HARM_CATEGORY_HATE_SPEECH: generative_models.HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+                    generative_models.HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT: generative_models.HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+                    generative_models.HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT: generative_models.HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+                    generative_models.HarmCategory.HARM_CATEGORY_HARASSMENT: generative_models.HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+            },
+            stream=True,
+        )
+        
+        res = ""
+        for response in responses:
+            res += response.text
+        
+        res = res[res.find("{"):res.rfind("}")+1]
+        res = res.replace("\n", "")
+        res = "[" + res.strip(",") + "]"
+        res = res.replace(""""name":""", """"title":""")
+        res = res.replace(""""price":""", """"amt":""")
+        res = eval(res)
+        
+        # print("result from OCR:")
+        # print(res)
+
+        return res
+
+
     
     def split_from_web_data(self, data):
         user_id = {user: i for i, user in enumerate(data["participants"])}
