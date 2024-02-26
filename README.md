@@ -10,11 +10,19 @@ Project-K aims to streamline expense management by recognizing and dividing expe
 * __Tailored for Syracuse, NY__: Customized to match the stores and needs of Syracuse University students.
 
 ## Supported Stores
-* Walmart (Work in progress)
-
-## Stores to be included
+* __All Stores__
+* Walmart
+* Target
+* Costco
 * Pricerite
 * Westcott Grocery
+
+## How to try the service
+- Visit the Project-K website at [Project-K](https://project-k-o4xlivwhaq-uc.a.run.app/static/index.html).
+- Add participants to the bill.
+- Select who are paying the bill from the dropdown menu.
+- Upload a bill image.
+- The Project-K service will automatically recognize the expense details and divide the expenses equally among the group members.
 
 ## Contributing
 * Join us in simplifying expense sharing for students of Syracuse University, NY! Your contributions and ideas are highly valued.
